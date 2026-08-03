@@ -24,6 +24,7 @@
         <module>xcms-base</module>
         <module>xcms-web</module>
         <module>xcms-system</module>
+        <module>xcms-auth</module>
     </modules>
 
     <properties>
@@ -64,6 +65,11 @@
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-system-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-auth-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

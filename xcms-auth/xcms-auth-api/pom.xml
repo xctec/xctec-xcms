@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms-auth</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-auth-api</artifactId>
+    <packaging>jar</packaging>
+
+    <name>xcms-auth-api</name>
+    <description>XCMS 认证模块 - 契约层（接口/DTO/错误码）</description>
+
+    <!-- 依赖纪律：api 模块只依赖 xcms-core，禁止依赖 xcms-base / xcms-web -->
+    <dependencies>
+        <dependency>
+            <groupId>com.df4j.xctec</groupId>
+            <artifactId>xcms-core</artifactId>
+        </dependency>
+
+        <!-- 校验注解：DTO 使用 @NotNull/@NotBlank 等 -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Lombok（编译期） -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

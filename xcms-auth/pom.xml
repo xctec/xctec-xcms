@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-auth</artifactId>
+    <packaging>pom</packaging>
+
+    <name>xcms-auth</name>
+    <description>XCMS 认证模块（登录、Token 签发与校验）- 聚合父工程</description>
+
+    <modules>
+        <module>xcms-auth-api</module>
+    </modules>
+</project>
