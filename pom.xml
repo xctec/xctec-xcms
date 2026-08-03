@@ -27,6 +27,7 @@
         <module>xcms-auth</module>
         <module>xcms-portal</module>
         <module>xcms-audit</module>
+        <module>xcms-notify</module>
     </modules>
 
     <properties>
@@ -82,6 +83,11 @@
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-audit-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-notify-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
