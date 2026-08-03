@@ -28,6 +28,7 @@
         <module>xcms-portal</module>
         <module>xcms-audit</module>
         <module>xcms-notify</module>
+        <module>xcms-dependencies</module>
     </modules>
 
     <properties>
@@ -37,112 +38,25 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- 第三方依赖版本（Spring 系由 spring-boot-starter-parent 管理） -->
-        <!-- 注意：querydsl 必须用 querydsl-openfeign.version，不能用 querydsl.version，
-             否则会与 spring-boot-dependencies BOM 中的 com.querydsl:querydsl-bom:5.1.0 冲突 -->
+        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
+
+        <!-- 以下版本属性供 build/pluginManagement 的 annotationProcessorPaths 直接引用，
+             与 xcms-dependencies BOM 中 dependencyManagement 的版本保持一致 -->
         <lombok.version>1.18.46</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <querydsl-openfeign.version>7.5</querydsl-openfeign.version>
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
-        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- 本项目模块 -->
+            <!-- 统一依赖管理 BOM：集中管理本项目所有模块及第三方版本（单一真相源） -->
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-core</artifactId>
+                <artifactId>xcms-dependencies</artifactId>
                 <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-base</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-web</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-system-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-auth-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-portal-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-audit-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-notify-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 业务模块 impl（骨架阶段，依赖面待后续补齐） -->
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-system-impl</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-auth-impl</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-portal-impl</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-audit-impl</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.df4j.xctec</groupId>
-                <artifactId>xcms-notify-impl</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- MapStruct -->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-
-            <!-- QueryDSL（openfeign 版，原生 Jakarta） -->
-            <dependency>
-                <groupId>io.github.openfeign.querydsl</groupId>
-                <artifactId>querydsl-jpa</artifactId>
-                <version>${querydsl-openfeign.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.openfeign.querydsl</groupId>
-                <artifactId>querydsl-apt</artifactId>
-                <version>${querydsl-openfeign.version}</version>
-                <classifier>jpa</classifier>
-            </dependency>
-
-            <!-- TransmittableThreadLocal -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>transmittable-thread-local</artifactId>
-                <version>${transmittable-thread-local.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
