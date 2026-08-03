@@ -1,0 +1,9 @@
+com.df4j.xctec.xcms.web.JacksonConfig
+com.df4j.xctec.xcms.web.XcmsMapperConfig
+com.df4j.xctec.xcms.web.GlobalExceptionHandler
+com.df4j.xctec.xcms.web.sort.SortResolverConfig
+com.df4j.xctec.xcms.web.security.SecurityContextHolder
+com.df4j.xctec.xcms.web.security.PermissionAspect
+com.df4j.xctec.xcms.web.filter.TraceIdFilter
+com.df4j.xctec.xcms.web.filter.TokenAuthenticationFilter
+com.df4j.xctec.xcms.web.filter.TenantContextFilter

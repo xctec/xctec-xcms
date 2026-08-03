@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-web</artifactId>
+    <packaging>jar</packaging>
+
+    <name>xcms-web</name>
+    <description>XCMS Web 适配层（异常/Jackson/过滤器/权限AOP/排序白名单）</description>
+
+    <dependencies>
+        <!-- xcms-core 契约层 -->
+        <dependency>
+            <groupId>com.df4j.xctec</groupId>
+            <artifactId>xcms-core</artifactId>
+        </dependency>
+
+        <!-- xcms-base：SecurityContextAccessor 接口在此，web 提供其实现 -->
+        <dependency>
+            <groupId>com.df4j.xctec</groupId>
+            <artifactId>xcms-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Web MVC（过滤器链、@RestControllerAdvice） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Jackson（Spring Boot 4 的 web starter 不再传递 jackson-databind） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <!-- 校验 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- AOP（PermissionAspect） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
+
+        <!-- QueryDSL：SortResolver 依赖 ComparableExpressionBase / OrderSpecifier -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+        </dependency>
+
+        <!-- MapStruct（运行时映射，XcmsMapperConfig） -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+
+        <!-- Lombok（编译期） -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
