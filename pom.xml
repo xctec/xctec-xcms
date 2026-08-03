@@ -53,42 +53,69 @@
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-core</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-base</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-web</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-system-api</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-auth-api</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-portal-api</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-audit-api</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-notify-api</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 业务模块 impl（骨架阶段，依赖面待后续补齐） -->
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-system-impl</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-auth-impl</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-portal-impl</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-audit-impl</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-notify-impl</artifactId>
+                <version>${revision}</version>
             </dependency>
 
             <!-- MapStruct -->

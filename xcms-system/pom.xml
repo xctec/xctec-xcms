@@ -18,5 +18,6 @@
 
     <modules>
         <module>xcms-system-api</module>
+        <module>xcms-system-impl</module>
     </modules>
 </project>

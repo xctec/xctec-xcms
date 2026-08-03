@@ -18,5 +18,6 @@
 
     <modules>
         <module>xcms-portal-api</module>
+        <module>xcms-portal-impl</module>
     </modules>
 </project>

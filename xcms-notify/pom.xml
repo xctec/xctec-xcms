@@ -18,5 +18,6 @@
 
     <modules>
         <module>xcms-notify-api</module>
+        <module>xcms-notify-impl</module>
     </modules>
 </project>

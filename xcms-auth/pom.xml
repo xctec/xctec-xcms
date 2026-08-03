@@ -18,5 +18,6 @@
 
     <modules>
         <module>xcms-auth-api</module>
+        <module>xcms-auth-impl</module>
     </modules>
 </project>

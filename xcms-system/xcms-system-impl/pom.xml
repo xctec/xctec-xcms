@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms-system</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-system-impl</artifactId>
+    <packaging>jar</packaging>
+
+    <name>xcms-system-impl</name>
+    <description>XCMS 系统模块 - 实现层（租户、组织、用户、角色、权限）</description>
+
+    <!-- 骨架阶段：仅依赖 xcms-core，暂不引入 base/web 等其它依赖 -->
+    <dependencies>
+        <dependency>
+            <groupId>com.df4j.xctec</groupId>
+            <artifactId>xcms-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
