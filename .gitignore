@@ -1,0 +1,67 @@
+.vscode
+.idea/
+# ---------- Maven / Java / Spring Boot ----------
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Flatten Maven Plugin
+.flattened-pom.xml
+
+# Maven
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/mvnw
+!**/src/main/**/mvnw.cmd
+
+# Logs
+*.log
+logs/
+
+# ---------- Node / React / Vite ----------
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Vite
+.vite/
+
+# npm / pnpm / yarn
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# ---------- IDE ----------
+.idea/
+*.iml
+*.iws
+.vscode/
+*.code-workspace
+.project
+.classpath
+.settings/
+.factorypath
+
+# ---------- OS ----------
+.DS_Store
+.AppleDouble
+.Library/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---------- Misc ----------
+*.swp
+*~
+.cache/
+.temp/
+.tmp/
