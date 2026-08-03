@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>xcms-core</name>
+    <description>XCMS 契约层（接口/DTO/异常/错误码/上下文抽象）</description>
+
+    <dependencies>
+        <!-- 校验：PageQuery 等使用 @Min/@Max -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Jackson 注解：ResultVo 使用 @JsonInclude -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <!-- JPA API：TreePath 使用 @Embeddable/@Column -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+        <!-- QueryDSL：@Embeddable 的 TreePath 会由 APT 生成 QTreePath，
+             编译期需要 querydsl-jpa 的类型（BeanPath/StringPath 等）。
+             provided 作用域：不传递给依赖方，运行期由 impl 提供。 -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 线程上下文透传：TraceContext / TenantContext 基于 TTL -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+
+        <!-- Lombok（编译期） -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
