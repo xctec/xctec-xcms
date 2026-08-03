@@ -23,6 +23,7 @@
         <module>xcms-core</module>
         <module>xcms-base</module>
         <module>xcms-web</module>
+        <module>xcms-system</module>
     </modules>
 
     <properties>
@@ -58,6 +59,11 @@
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-system-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
