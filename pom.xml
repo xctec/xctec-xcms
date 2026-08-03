@@ -21,6 +21,7 @@
 
     <modules>
         <module>xcms-core</module>
+        <module>xcms-base</module>
     </modules>
 
     <properties>
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.df4j.xctec</groupId>
                 <artifactId>xcms-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec</groupId>
+                <artifactId>xcms-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

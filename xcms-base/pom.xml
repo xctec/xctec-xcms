@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.df4j.xctec</groupId>
+        <artifactId>xcms</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>xcms-base</artifactId>
+    <packaging>jar</packaging>
+
+    <name>xcms-base</name>
+    <description>XCMS 基础设施实现层（JPA/ID/树/事件/缓存/租户隔离/TokenStore）</description>
+
+    <dependencies>
+        <!-- 契约层 -->
+        <dependency>
+            <groupId>com.df4j.xctec</groupId>
+            <artifactId>xcms-core</artifactId>
+        </dependency>
+
+        <!-- Spring 上下文（@Component/@Service/@Configuration/@Bean/@ConditionalOnMissingBean） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Spring TX（@Transactional / TransactionSynchronizationManager） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+
+        <!-- JPA / Hibernate（@TenantId / @MappedSuperclass / Generator / CurrentTenantIdentifierResolver） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Boot 配置支持（@ConfigurationProperties / @EnableConfigurationProperties） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- JDBC（号段策略 SegmentIdStrategy 需要 JdbcTemplate） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!-- QueryDSL 运行时（TreeService 子树迁移使用 queryFactory） -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+        </dependency>
+
+        <!-- 线程上下文透传（TtlExecutors 包装事件执行器） -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+
+        <!-- Lombok（编译期） -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

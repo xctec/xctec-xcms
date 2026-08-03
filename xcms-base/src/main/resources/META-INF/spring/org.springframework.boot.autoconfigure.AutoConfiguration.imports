@@ -1,0 +1,9 @@
+com.df4j.xctec.xcms.base.jpa.id.IdGeneratorConfig
+com.df4j.xctec.xcms.base.event.EventExecutorConfig
+com.df4j.xctec.xcms.base.event.EventBus
+com.df4j.xctec.xcms.base.event.AsyncEventPublisher
+com.df4j.xctec.xcms.base.cache.DefaultMemoryCache
+com.df4j.xctec.xcms.base.security.MemoryTokenStore
+com.df4j.xctec.xcms.base.tenant.DefaultTenantGuard
+com.df4j.xctec.xcms.base.tenant.DefaultTenantElevation
+com.df4j.xctec.xcms.base.jpa.XcmsAuditorAware
