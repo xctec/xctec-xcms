@@ -29,6 +29,7 @@
         <module>xcms-audit</module>
         <module>xcms-notify</module>
         <module>xcms-dependencies</module>
+        <module>xcms-app</module>
     </modules>
 
     <properties>

@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: xcms
+  # 数据源 / JPA / Hibernate 多租户等配置由具体运行环境注入（见各 *-impl 文档与阶段化 DDL）。
+  # 占位说明：
+  #   xcms-base 通过 yaml 配置 hibernate.multi-tenancy.identifier-resolver 接入租户隔离；
+  #   xcms-web 已负责 trace / token / tenant 上下文过滤器链。
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+server:
+  port: 8080
