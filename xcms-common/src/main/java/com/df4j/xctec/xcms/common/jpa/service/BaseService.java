@@ -13,7 +13,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.JPQLQueryFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public abstract class BaseService<E extends BaseEntity,
     private R repository;
 
     @Setter(onMethod_ = {@Autowired})
-    private JPAQueryFactory queryFactory;
+    private JPQLQueryFactory queryFactory;
 
     @Setter(onMethod_ = {@Autowired})
     private C converter;

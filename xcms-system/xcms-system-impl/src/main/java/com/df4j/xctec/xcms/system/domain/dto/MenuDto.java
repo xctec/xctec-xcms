@@ -1,11 +1,9 @@
 package com.df4j.xctec.xcms.system.domain.dto;
 
 import com.df4j.xctec.xcms.common.jpa.dto.BaseTreeDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class MenuDto extends BaseTreeDto<MenuDto> {
 
     private String menuName;

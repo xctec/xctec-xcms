@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "system_user", indexes = {
-        @Index(name = "idx_system_user_tenant_username", columnList = "tenant_id,username", unique = true)
+@Table(name = "sys_user", indexes = {
+        @Index(name = "idx_sys_user_tenant_username", columnList = "tenant_id,username", unique = true)
 })
 public class User extends BaseAuditableEntity implements TenantScoped {
 

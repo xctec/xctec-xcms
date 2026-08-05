@@ -3,18 +3,16 @@ package com.df4j.xctec.xcms.system.domain.entity;
 import com.df4j.xctec.xcms.common.jpa.entity.BaseAuditableEntity;
 import com.df4j.xctec.xcms.common.jpa.entity.TenantScoped;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(
-        name = "system_role",
+        name = "sys_role",
         indexes = {
-                @Index(name = "idx_system_role_tenant_code", columnList = "tenant_id,role_code", unique = true)
+                @Index(name = "idx_sys_role_tenant_code", columnList = "tenant_id,role_code", unique = true)
         },
         comment = "角色表"
 )
@@ -25,7 +23,7 @@ public class Role extends BaseAuditableEntity implements TenantScoped {
     @Column(name = "id", precision = 18, nullable = false, comment = "主键ID")
     private Long id;
 
-    @Column(name = "id", precision = 18, nullable = false, comment = "租户ID")
+    @Column(name = "tenant_id", precision = 18, nullable = false, comment = "租户ID")
     private Long tenantId;
 
     @Column(name = "role_code", nullable = false, length = 64, comment = "角色代码")

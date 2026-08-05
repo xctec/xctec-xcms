@@ -12,6 +12,7 @@
         <module>xcms-core</module>
         <module>xcms-system</module>
         <module>xcms-common</module>
+        <module>xcms-app</module>
     </modules>
 
     <parent>

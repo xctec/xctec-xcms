@@ -1,11 +1,9 @@
 package com.df4j.xctec.xcms.system.domain.query;
 
 import com.df4j.xctec.xcms.core.vo.PageQuery;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class OrgUnitQuery extends PageQuery {
 
     private String orgName;

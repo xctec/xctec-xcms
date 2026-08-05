@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(
-        name = "system_tenant_info",
+        name = "sys_tenant_info",
         indexes = {
-                @Index(name = "idx_system_tenant_code", columnList = "node_code", unique = true)
+                @Index(name = "idx_sys_tenant_code", columnList = "node_code", unique = true)
         },
         comment = "租户信息表"
 )
