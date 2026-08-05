@@ -1,11 +1,9 @@
 package com.df4j.xctec.xcms.system.domain.dto;
 
 import com.df4j.xctec.xcms.common.jpa.dto.BaseDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UserDto extends BaseDto {
 
     private String username;

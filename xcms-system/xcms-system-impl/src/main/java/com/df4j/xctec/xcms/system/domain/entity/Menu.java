@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "system_menu", indexes = {
-        @Index(name = "idx_system_menu_tenant_code", columnList = "tenant_id,node_code", unique = true)
+@Table(name = "sys_menu", indexes = {
+        @Index(name = "idx_sys_menu_tenant_code", columnList = "tenant_id,node_code", unique = true)
 })
 public class Menu extends BaseTreeEntity implements TenantScoped {
 
