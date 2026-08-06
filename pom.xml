@@ -13,6 +13,7 @@
         <module>xcms-system</module>
         <module>xcms-common</module>
         <module>xcms-app</module>
+        <module>xcms-portal</module>
     </modules>
 
     <parent>

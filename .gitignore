@@ -1,3 +1,5 @@
+*.mv.db
+*.trace.db
 .vscode
 .idea/
 # ---------- Maven / Java / Spring Boot ----------
