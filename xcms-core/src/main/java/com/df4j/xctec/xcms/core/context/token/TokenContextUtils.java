@@ -30,6 +30,6 @@ public class TokenContextUtils {
     }
 
     public static Optional<String> token() {
-        return Optional.of(current().get());
+        return Optional.ofNullable(current().getOrNull());
     }
 }

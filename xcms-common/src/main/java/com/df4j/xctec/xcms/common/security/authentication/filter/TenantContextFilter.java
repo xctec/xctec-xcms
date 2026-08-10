@@ -14,19 +14,19 @@ public class TenantContextFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("X-Tenant-Id");
-        Long tenantId = -1L;
+        Long tenantId = null;
         if (StringUtils.hasText(header)) {
             try {
-                tenantId = Long.parseLong(header);
-            } catch (Exception e) {
-
+                tenantId = Long.parseLong(header.trim());
+            } catch (NumberFormatException e) {
+                tenantId = null;
             }
         }
-        if (tenantId == -1) {
+        if (tenantId == null) {
+            // 没有合法的租户头，不写入上下文，交由业务/认证过滤器决定是否拦截
             filterChain.doFilter(request, response);
         } else {
             try {
-                // 确保清理了context
                 TenantContextUtils.setTenantId(tenantId);
                 filterChain.doFilter(request, response);
             } finally {
