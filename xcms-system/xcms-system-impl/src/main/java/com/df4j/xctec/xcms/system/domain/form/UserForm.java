@@ -14,7 +14,7 @@ public class UserForm extends BaseForm {
 
     private String email;
 
-    private String phone;
+    private String mobile;
 
     private String avatar;
 

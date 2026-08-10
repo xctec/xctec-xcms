@@ -12,7 +12,7 @@ public class UserDto extends BaseDto {
 
     private String email;
 
-    private String phone;
+    private String mobile;
 
     private String avatar;
 
