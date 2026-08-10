@@ -1,18 +1,18 @@
-package com.df4j.xctec.xcms.core.context;
+package com.df4j.xctec.xcms.core.context.tenant;
 
 import java.util.Optional;
 
 public class TenantContextUtils {
-    private static ContextAccessor<Long> instance;
+    private static TenantContextAccessor instance;
 
-    public static void bind(ContextAccessor<Long> tenantContextAccessor) {
+    public static void bind(TenantContextAccessor tenantContextAccessor) {
         instance = tenantContextAccessor;
     }
 
-    private static ContextAccessor<Long> current() {
-        ContextAccessor<Long> accessor = instance;
+    private static TenantContextAccessor current() {
+        TenantContextAccessor accessor = instance;
         if (accessor == null) {
-            throw new IllegalStateException("ContextAccessor 尚未初始化，请确认已经注入");
+            throw new IllegalStateException("TenantContextAccessor 尚未初始化，请确认已经注入");
         }
         return accessor;
     }
