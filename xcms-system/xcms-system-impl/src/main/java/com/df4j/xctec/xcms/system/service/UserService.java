@@ -36,7 +36,7 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
             where.andAnyOf(
                     q.username.contains(keyword),
                     q.nickname.contains(keyword),
-                    q.phone.contains(keyword)
+                    q.mobile.contains(keyword)
             );
         }
         if (StringUtils.hasText(params.getUsername())) {
@@ -45,8 +45,8 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
         if (StringUtils.hasText(params.getNickname())) {
             where.and(q.nickname.contains(params.getNickname()));
         }
-        if (StringUtils.hasText(params.getPhone())) {
-            where.and(q.phone.contains(params.getPhone()));
+        if (StringUtils.hasText(params.getMobile())) {
+            where.and(q.mobile.contains(params.getMobile()));
         }
         if (params.getOrgUnitId() != null) {
             where.and(q.orgUnitId.eq(params.getOrgUnitId()));

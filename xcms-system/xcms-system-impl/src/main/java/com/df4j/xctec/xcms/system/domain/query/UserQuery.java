@@ -12,7 +12,7 @@ public class UserQuery extends PageQuery {
 
     private String nickname;
 
-    private String phone;
+    private String mobile;
 
     private Long orgUnitId;
 

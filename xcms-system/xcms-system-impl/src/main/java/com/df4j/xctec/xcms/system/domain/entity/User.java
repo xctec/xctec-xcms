@@ -34,8 +34,8 @@ public class User extends BaseAuditableEntity implements TenantScoped {
     @Column(name = "email", length = 100, comment = "邮箱")
     private String email;
 
-    @Column(name = "phone", length = 20, comment = "手机号")
-    private String phone;
+    @Column(name = "mobile", length = 20, comment = "手机号")
+    private String mobile;
 
     @Column(name = "avatar", length = 255, comment = "头像地址")
     private String avatar;
