@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.df4j.xctec.xcms</groupId>
-        <artifactId>xcms-auth</artifactId>
+        <artifactId>xcms-portal</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>xcms-auth-api</artifactId>
+    <artifactId>xcms-portal-api</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -21,6 +21,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.df4j.xctec.xcms</groupId>

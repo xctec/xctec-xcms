@@ -12,8 +12,9 @@
         <module>xcms-core</module>
         <module>xcms-system</module>
         <module>xcms-common</module>
-        <module>xcms-app</module>
+        <module>xcms-auth</module>
         <module>xcms-portal</module>
+        <module>xcms-app</module>
     </modules>
 
     <parent>
@@ -75,6 +76,16 @@
             <dependency>
                 <groupId>com.df4j.xctec.xcms</groupId>
                 <artifactId>xcms-auth-impl</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec.xcms</groupId>
+                <artifactId>xcms-portal-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.df4j.xctec.xcms</groupId>
+                <artifactId>xcms-portal-impl</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

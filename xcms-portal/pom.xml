@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>xcms-portal</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -17,21 +18,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.df4j.xctec.xcms</groupId>
-            <artifactId>xcms-common</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>xcms-portal-api</module>
+        <module>xcms-portal-impl</module>
+    </modules>
 
 </project>

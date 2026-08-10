@@ -5,4 +5,7 @@ import com.df4j.xctec.xcms.system.domain.entity.User;
 
 public interface UserRepository extends BaseRepository<User> {
 
+    java.util.Optional<User> findByUsername(String username);
+
+    java.util.Optional<User> findByTenantIdAndUsername(Long tenantId, String username);
 }
