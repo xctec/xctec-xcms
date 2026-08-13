@@ -15,7 +15,7 @@ import java.util.Map;
 public class ResponseUtils {
 
     public static void writeJson(HttpServletResponse response, Object result) {
-        writeJson(response, response, HttpStatus.OK);
+        writeJson(response, result, HttpStatus.OK);
     }
 
     public static void writeJson(HttpServletResponse response, Object result, HttpStatus httpStatus) {
