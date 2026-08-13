@@ -27,10 +27,6 @@
             <artifactId>xcms-auth-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.df4j.xctec.xcms</groupId>
-            <artifactId>xcms-system-impl</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>

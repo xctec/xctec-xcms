@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 登录接口实现（auth-impl）。
  * <p>
  * 租户标识从请求头 {@code X-Tenant-Id} 经 {@code TenantContextFilter} 写入 {@link TenantContextUtils}，
- * 不在登录表单中传递，由 {@code UserDetailsServiceImpl} 内部从上下文获取。
+ * 不在登录表单中传递，由 common 中的 {@code UserDetailsServiceImpl} 内部从上下文获取。
  */
 @RestController
 public class LoginController implements LoginApi {
