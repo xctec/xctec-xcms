@@ -22,7 +22,7 @@ public class XcmsAccessDeniedHandler implements AccessDeniedHandler {
         if (log.isDebugEnabled()) {
             log.debug("访问被拒绝", accessDeniedException);
         }
-        ResultVo<?> resultVo = ResultUtils.error("-403", "访问被拒绝", HttpStatus.FORBIDDEN);
-        ResponseUtils.writeJson(response, resultVo);
+        ResultVo<?> resultVo = ResultUtils.error("-403", "访问被拒绝");
+        ResponseUtils.writeJson(response, resultVo, HttpStatus.FORBIDDEN);
     }
 }

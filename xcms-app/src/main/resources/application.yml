@@ -11,3 +11,13 @@ spring:
     time-zone: Asia/Shanghai
 server:
   port: 8080
+
+xcms:
+  security:
+    permit-all-matchers:
+      - /auth/**
+      - /error
+    ignore-matchers:
+      - /actuator/**
+      - /actuator
+      - /h2-console/**

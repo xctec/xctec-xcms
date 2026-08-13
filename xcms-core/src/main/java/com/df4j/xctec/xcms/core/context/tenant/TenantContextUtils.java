@@ -30,6 +30,6 @@ public class TenantContextUtils {
     }
 
     public static Optional<Long> tenantId() {
-        return Optional.of(current().get());
+        return Optional.ofNullable(current().getOrNull());
     }
 }

@@ -27,12 +27,20 @@
             <artifactId>xcms-auth-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.df4j.xctec.xcms</groupId>
+            <artifactId>xcms-system-impl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
         </dependency>
     </dependencies>
 
