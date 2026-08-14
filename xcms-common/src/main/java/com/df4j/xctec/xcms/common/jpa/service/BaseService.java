@@ -2,9 +2,12 @@ package com.df4j.xctec.xcms.common.jpa.service;
 
 import com.df4j.xctec.xcms.common.jpa.converter.ModelConverter;
 import com.df4j.xctec.xcms.common.jpa.dto.BaseDto;
-import com.df4j.xctec.xcms.common.jpa.entity.BaseEntity;
+import com.df4j.xctec.xcms.common.jpa.entity.BaseAuditableEntity;
+import com.df4j.xctec.xcms.common.jpa.entity.TenantScoped;
 import com.df4j.xctec.xcms.common.jpa.form.BaseForm;
 import com.df4j.xctec.xcms.common.jpa.repository.BaseRepository;
+import com.df4j.xctec.xcms.common.security.authentication.userdetails.XcmsUserDetails;
+import com.df4j.xctec.xcms.core.context.tenant.TenantContextUtils;
 import com.df4j.xctec.xcms.core.exception.BizException;
 import com.df4j.xctec.xcms.core.vo.PageQuery;
 import com.df4j.xctec.xcms.core.vo.PageVo;
@@ -17,12 +20,20 @@ import com.querydsl.jpa.JPQLQueryFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Getter
-public abstract class BaseService<E extends BaseEntity,
+public abstract class BaseService<E extends BaseAuditableEntity,
         Q extends EntityPathBase<E>,
         D extends BaseDto,
         F extends BaseForm,
@@ -39,6 +50,20 @@ public abstract class BaseService<E extends BaseEntity,
     @Setter(onMethod_ = {@Autowired})
     private C converter;
 
+    /**
+     * 落库前的钩子，子类可覆写以对实体做统一处理（如密码加密）。
+     * 默认空实现，仅对覆写的实体生效，不影响其他实体。
+     */
+    protected void onBeforePersist(E entity) {
+    }
+
+    /**
+     * edit 前置钩子，子类可覆写以在 {@code setEntity} 前调整表单（如把空白密码置为 null，
+     * 使 MapStruct 的 {@code IGNORE} 策略保留实体既有值，避免覆盖原哈希）。默认空实现。
+     */
+    protected void beforeEdit(F form, E entity) {
+    }
+
     public abstract Q getQ();
 
     public abstract NumberPath<Long> getIdPath();
@@ -49,8 +74,119 @@ public abstract class BaseService<E extends BaseEntity,
         return new OrderSpecifier<?>[0];
     }
 
+    /**
+     * 当前实体类型是否实现 {@link TenantScoped}，需要按租户隔离。
+     */
+    protected boolean isTenantScoped() {
+        return TenantScoped.class.isAssignableFrom(this.getQ().getType());
+    }
+
+    /**
+     * 取当前请求的租户ID（来自 {@code X-Tenant-Id} 头，由 TenantContextFilter 写入）。
+     */
+    protected Optional<Long> currentTenantId() {
+        return TenantContextUtils.tenantId();
+    }
+
+    /**
+     * 在查询条件上追加租户过滤（仅对实现 {@link TenantScoped} 的实体生效）。
+     */
+    protected BooleanBuilder withTenantFilter(BooleanBuilder where) {
+        if (isTenantScoped()) {
+            currentTenantId().ifPresent(tid -> where.and(getTenantIdPath().eq(tid)));
+        }
+        return where;
+    }
+
+    /**
+     * 校验实体属于当前租户，防止越权读写其他租户数据。非租户隔离实体直接放行。
+     */
+    protected void ensureSameTenant(E entity) {
+        if (entity instanceof TenantScoped ts) {
+            Long current = currentTenantId().orElse(null);
+            if (current == null || !current.equals(ts.getTenantId())) {
+                throw BizException.of("403", "无权操作非本租户的记录");
+            }
+        }
+    }
+
+    /**
+     * 写入时把租户ID从上下文 stamp 到实体（form 不得携带 tenantId）。
+     */
+    protected void stampTenantId(E entity) {
+        if (entity instanceof TenantScoped ts) {
+            currentTenantId().ifPresent(ts::setTenantId);
+        }
+    }
+
+    /**
+     * 非请求上下文（如系统初始化、内部调用）下无登录用户时的审计用户ID哨兵值。
+     */
+    protected static final Long SYSTEM_USER_ID = 0L;
+
+    /**
+     * 取当前登录用户ID（来自 SecurityContext 的 principal）。
+     * 无认证上下文（如 bootstrap/内部调用）时返回 null，由 {@link #stampAudit} 回退为系统用户。
+     */
+    protected Long currentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof XcmsUserDetails userDetails) {
+            return userDetails.getUserId();
+        }
+        return null;
+    }
+
+    /**
+     * 统一填充审计列，避免 {@code createBy/createTime/updateTime/updateBy} 因 NOT NULL 约束导致落库失败。
+     * <ul>
+     *   <li>create：填充 createBy/createTime（createBy 为 insert-only，不覆盖已有值）。</li>
+     *   <li>edit：刷新 updateBy/updateTime 为当前操作者与时间。</li>
+     * </ul>
+     * 用户ID优先取登录主体，缺省回退为 {@link #SYSTEM_USER_ID}。
+     */
+    protected void stampAudit(E entity, boolean isCreate) {
+        Long userId = currentUserId();
+        if (userId == null) {
+            userId = SYSTEM_USER_ID;
+        }
+        Instant now = Instant.now();
+        if (isCreate) {
+            if (entity.getCreateTime() == null) {
+                entity.setCreateTime(now);
+            }
+            if (entity.getCreateBy() == null) {
+                entity.setCreateBy(userId);
+            }
+        }
+        entity.setUpdateTime(now);
+        entity.setUpdateBy(userId);
+    }
+
+    /**
+     * 反射获取 Q 类型的 tenantId 路径（租户隔离实体必有该 public 字段）。
+     */
+    @SuppressWarnings("unchecked")
+    protected NumberPath<Long> getTenantIdPath() {
+        Q q = this.getQ();
+        Class<?> qClass = q.getClass();
+        Field field = TENANT_FIELD_CACHE.computeIfAbsent(qClass, k -> {
+            try {
+                return k.getField("tenantId");
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("租户隔离实体缺失 tenantId 字段: " + k.getName(), e);
+            }
+        });
+        try {
+            return (NumberPath<Long>) field.get(q);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("无法读取 tenantId 字段: " + qClass.getName(), e);
+        }
+    }
+
+    private static final Map<Class<?>, Field> TENANT_FIELD_CACHE = new ConcurrentHashMap<>();
+
     public List<D> list(QP params) {
-        BooleanBuilder where = this.getWhere(params);
+        BooleanBuilder where = withTenantFilter(this.getWhere(params));
         return this.getQueryFactory()
                 .selectFrom(this.getQ())
                 .where(where)
@@ -63,7 +199,7 @@ public abstract class BaseService<E extends BaseEntity,
 
     public PageVo<D> page(QP params) {
 
-        BooleanBuilder where = this.getWhere(params);
+        BooleanBuilder where = withTenantFilter(this.getWhere(params));
 
         var q = this.getQueryFactory()
                 .from(this.getQ())
@@ -89,16 +225,24 @@ public abstract class BaseService<E extends BaseEntity,
     public F editItem(Long id) {
         return this.getRepository()
                 .findById(id)
-                .map(x -> this.getConverter().toForm(x))
+                .map(x -> {
+                    ensureSameTenant(x);
+                    return this.getConverter().toForm(x);
+                })
                 .orElse(null);
     }
 
+    @Transactional
     public F create(F form) {
         E entity = this.getConverter().toEntity(form);
+        stampTenantId(entity);
+        onBeforePersist(entity);
+        stampAudit(entity, true);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }
 
+    @Transactional
     public F edit(F form) {
         Long id = form.getId();
         if (id == null) {
@@ -107,22 +251,35 @@ public abstract class BaseService<E extends BaseEntity,
         E entity = this.getRepository()
                 .findById(id)
                 .orElseThrow(() -> BizException.of("-2", "找不到制定id的记录"));
+        ensureSameTenant(entity);
+        beforeEdit(form, entity);
         this.getConverter().setEntity(form, entity);
+        stampTenantId(entity);
+        onBeforePersist(entity);
+        stampAudit(entity, false);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }
 
+    @Transactional
     public long del(Long id) {
+        BooleanBuilder where = new BooleanBuilder()
+                .and(this.getIdPath().eq(id));
+        withTenantFilter(where);
         return this.getQueryFactory()
                 .delete(this.getQ())
-                .where(this.getIdPath().eq(id))
+                .where(where)
                 .execute();
     }
 
+    @Transactional
     public long delAll(List<Long> ids) {
+        BooleanBuilder where = new BooleanBuilder()
+                .and(this.getIdPath().in(ids));
+        withTenantFilter(where);
         return this.getQueryFactory()
                 .delete(this.getQ())
-                .where(this.getIdPath().in(ids))
+                .where(where)
                 .execute();
     }
 }

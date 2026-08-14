@@ -4,6 +4,7 @@ import com.df4j.xctec.xcms.common.jpa.converter.ModelConverter;
 import com.df4j.xctec.xcms.common.jpa.dto.BaseDto;
 import com.df4j.xctec.xcms.common.jpa.dto.BaseTreeDto;
 import com.df4j.xctec.xcms.common.jpa.entity.BaseTreeEntity;
+import com.df4j.xctec.xcms.common.jpa.entity.TenantScoped;
 import com.df4j.xctec.xcms.common.jpa.form.BaseTreeForm;
 import com.df4j.xctec.xcms.common.jpa.repository.BaseRepository;
 import com.df4j.xctec.xcms.core.exception.BizException;
@@ -11,7 +12,7 @@ import com.df4j.xctec.xcms.core.vo.PageQuery;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
-import org.springframework.util.ObjectUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public F create(F form) {
         Long parentId = form.getParentId();
         if (parentId == null) {
@@ -71,15 +73,22 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
                     .orElseThrow(
                             () -> BizException.of("-1", "找不到指定的上级节点")
                     );
+            // 上级节点必须属于当前租户，防止跨租户挂载
+            ensureSameTenant(parent);
             entity.setTreeLevel(parent.getTreeLevel() + 1);
             entity.setPath(parent.getPath() + parent.getId() + "/");
             entity.setCodePath(parent.getCodePath() + entity.getNodeCode() + "/");
         }
+        // 写入时把租户ID从上下文 stamp 到实体（form 不得携带 tenantId）
+        stampTenantId(entity);
+        onBeforePersist(entity);
+        stampAudit(entity, true);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }
 
     @Override
+    @Transactional
     public F edit(F form) {
         // todo
         // 需要考虑修改父节点，也就是移动子树的情况
@@ -87,13 +96,16 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public long del(Long id) {
         E entity = this.getRepository()
                 .findById(id)
                 .orElseThrow(() -> BizException.of("-1", "找不到待删除的节点"));
-        // 使用code_path一次性删除
+        ensureSameTenant(entity);
+        // 使用code_path一次性删除，并追加租户过滤
         BooleanBuilder where = new BooleanBuilder()
                 .and(this.getCodePath().contains(entity.getCodePath()));
+        withTenantFilter(where);
         return this.getQueryFactory()
                 .delete(this.getQ())
                 .where(where)
@@ -101,17 +113,20 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public long delAll(List<Long> ids) {
         List<E> entities = this.getRepository()
                 .findAllById(ids);
-        if (ObjectUtils.isArray(entities)) {
+        if (entities.isEmpty()) {
             throw BizException.of("-1", "找不到待删除的记录");
         }
-        // 使用code_path一次性删除
+        // 使用code_path一次性删除，并追加租户过滤
         BooleanBuilder where = new BooleanBuilder();
         for (E entity : entities) {
+            ensureSameTenant(entity);
             where.or(this.getCodePath().contains(entity.getCodePath()));
         }
+        withTenantFilter(where);
         return this.getQueryFactory()
                 .delete(this.getQ())
                 .where(where)

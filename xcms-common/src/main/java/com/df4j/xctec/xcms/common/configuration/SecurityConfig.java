@@ -2,6 +2,7 @@ package com.df4j.xctec.xcms.common.configuration;
 
 import com.df4j.xctec.xcms.common.configuration.properties.SecurityProperties;
 import com.df4j.xctec.xcms.common.security.authentication.filter.TenantContextFilter;
+import com.df4j.xctec.xcms.common.security.authentication.filter.TenantValidationFilter;
 import com.df4j.xctec.xcms.common.security.authentication.filter.TokenContextFilter;
 import com.df4j.xctec.xcms.common.security.authentication.filter.XcmsBearerTokenAuthenticationFilter;
 import com.df4j.xctec.xcms.common.security.authentication.handler.XcmsAccessDeniedHandler;
@@ -107,7 +108,8 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .addFilterBefore(bearerFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new TenantContextFilter(), XcmsBearerTokenAuthenticationFilter.class)
-                .addFilterBefore(new TokenContextFilter(), XcmsBearerTokenAuthenticationFilter.class);
+                .addFilterBefore(new TokenContextFilter(), XcmsBearerTokenAuthenticationFilter.class)
+                .addFilterAfter(new TenantValidationFilter(), XcmsBearerTokenAuthenticationFilter.class);
         return http.build();
     }
 }
