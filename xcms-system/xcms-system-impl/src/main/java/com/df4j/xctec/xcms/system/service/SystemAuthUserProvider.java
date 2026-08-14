@@ -44,6 +44,10 @@ public class SystemAuthUserProvider implements AuthUserProvider {
                 .map(Role::getRoleName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
+        authUser.setRoleCodes(user.getRoles().stream()
+                .map(Role::getRoleCode)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
         authUser.setOrgUnitName(user.getOrgUnit() == null ? null : user.getOrgUnit().getOrgName());
         return authUser;
     }

@@ -26,5 +26,6 @@ public class AuthUser implements Serializable {
     private String email;
     private String enableStatus;
     private List<String> roleNames;
+    private List<String> roleCodes;
     private String orgUnitName;
 }

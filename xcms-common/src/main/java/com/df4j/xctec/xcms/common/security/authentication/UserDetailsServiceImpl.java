@@ -3,6 +3,8 @@ package com.df4j.xctec.xcms.common.security.authentication;
 import com.df4j.xctec.xcms.common.security.authentication.userdetails.XcmsUserDetails;
 import com.df4j.xctec.xcms.core.context.tenant.TenantContextUtils;
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -56,6 +58,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         details.setEmail(authUser.getEmail());
         details.setEnableStatus(authUser.getEnableStatus());
         details.setRoleNames(authUser.getRoleNames());
+        details.setRoleCodes(authUser.getRoleCodes() == null ? null : new HashSet<>(authUser.getRoleCodes()));
         details.setOrgUnitName(authUser.getOrgUnitName());
         return details;
     }
