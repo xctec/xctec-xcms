@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:xcms_test;MODE=MySQL;DB_CLOSE_DELAY=-1;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+
+xcms:
+  security:
+    permit-all-matchers:
+      - /auth/**
+      - /error
+    ignore-matchers:
+      - /actuator/**
+      - /actuator
