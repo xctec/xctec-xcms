@@ -3,7 +3,6 @@ package com.df4j.xctec.xcms.auth.controller;
 import com.df4j.xctec.xcms.auth.api.LoginApi;
 import com.df4j.xctec.xcms.auth.api.dto.LoginRequest;
 import com.df4j.xctec.xcms.auth.api.dto.RefreshRequest;
-import com.df4j.xctec.xcms.common.security.authentication.userdetails.XcmsUserDetails;
 import com.df4j.xctec.xcms.common.security.token.TokenManager;
 import com.df4j.xctec.xcms.core.context.tenant.TenantContextUtils;
 import com.df4j.xctec.xcms.core.context.token.TokenContextUtils;
@@ -47,7 +46,6 @@ public class LoginController implements LoginApi {
     private ResultVo<TokenVo> doLogin(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        XcmsUserDetails details = (XcmsUserDetails) authentication.getPrincipal();
         TokenVo tokenVo = tokenManager.generate(authentication);
         return ResultUtils.success(tokenVo);
     }
