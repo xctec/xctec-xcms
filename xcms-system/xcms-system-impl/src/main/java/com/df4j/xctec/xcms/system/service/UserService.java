@@ -62,29 +62,33 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
     }
 
     /**
-     * 落库前钩子：对明文密码做 BCrypt 加密。
-     * 规则：密码为空保留原值；已为 BCrypt 哈希（以 $2a$/$2b$ 开头）不重复加密；其余视为明文加密。
+     * 落库前钩子：对需要加密的密码做 BCrypt 加密。
+     * 触发条件（避免"总是加密"破坏 F 修复——编辑空密码时需保留既有哈希）：
+     *  - 新建记录（id 为 null）：表单里的密码一律视作明文，始终加密（提交 $2a$ 串也会被二次加密，杜绝哈希注入）；
+     *  - 编辑/改密且表单显式提供了非空密码（passwordEncryptionForced=true）：加密之；
+     *  - 编辑空密码：不触发，MapStruct IGNORE 已保留实体既有 BCrypt 哈希，原样落库。
      */
     @Override
     protected void onBeforePersist(User user) {
+        boolean isNew = user.getId() == null;
         String password = user.getPassword();
-        if (password == null || password.isBlank()) {
-            return;
+        if ((isNew || user.isPasswordEncryptionForced())
+                && password != null && !password.isBlank()) {
+            user.setPassword(passwordEncoder.encode(password));
         }
-        if (password.startsWith("$2a$") || password.startsWith("$2b$")) {
-            return;
-        }
-        user.setPassword(passwordEncoder.encode(password));
     }
 
     /**
-     * edit 前置：表单密码为 null/空白时置为 null，使 MapStruct 的 IGNORE 策略
-     * 保留实体既有 BCrypt 哈希，避免把已加密密码清空为 ""（高危）。
+     * edit 前置：
+     *  - 表单密码为空/空白 → 置为 null，使 MapStruct 的 IGNORE 策略（仅跳过 null 源）保留实体既有 BCrypt 哈希（F 修复）；
+     *  - 表单提供了非空密码 → 标记需要加密，交由 onBeforePersist 统一加密（兼容编辑改密）。
      */
     @Override
     protected void beforeEdit(UserForm form, User entity) {
         if (form.getPassword() == null || form.getPassword().isBlank()) {
             form.setPassword(null);
+        } else {
+            entity.setPasswordEncryptionForced(true);
         }
     }
 
@@ -108,6 +112,7 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
             throw BizException.of("400", "旧密码不正确");
         }
         user.setPassword(newPassword);
+        user.setPasswordEncryptionForced(true);
         onBeforePersist(user);
         this.getRepository().save(user);
     }

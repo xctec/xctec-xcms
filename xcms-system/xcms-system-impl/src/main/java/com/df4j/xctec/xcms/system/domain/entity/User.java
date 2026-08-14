@@ -45,6 +45,14 @@ public class User extends BaseAuditableEntity implements TenantScoped {
     @Column(name = "enable_status", length = 20, comment = "启用状态")
     private String enableStatus;
 
+    /**
+     *  transient 标记：编辑/改密时若表单显式提供了密码，置为 true，由 onBeforePersist 统一加密。
+     *  新建记录（id 为 null）天然需要加密；编辑空密码时不标记，从而保留既有哈希（F 修复）。
+     *  非持久化字段。
+     */
+    @Transient
+    private boolean passwordEncryptionForced;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "sys_user_role",
