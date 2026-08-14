@@ -3,6 +3,7 @@ package com.df4j.xctec.xcms.common.security.authentication;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 认证所需用户只读视图（端口契约）。
@@ -24,4 +25,6 @@ public class AuthUser implements Serializable {
     private String mobile;
     private String email;
     private String enableStatus;
+    private List<String> roleNames;
+    private String orgUnitName;
 }

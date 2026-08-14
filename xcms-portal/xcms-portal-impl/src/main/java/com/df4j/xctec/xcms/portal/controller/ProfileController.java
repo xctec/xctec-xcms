@@ -45,6 +45,8 @@ public class ProfileController implements ProfileApi {
                 .email(userDetails.getEmail())
                 .encType(userDetails.getEncType())
                 .roleCodes(userDetails.getRoleCodes())
+                .roleNames(userDetails.getRoleNames())
+                .orgUnitName(userDetails.getOrgUnitName())
                 .enableStatus(userDetails.getEnableStatus())
                 .build();
         return ResultUtils.success(dto);
