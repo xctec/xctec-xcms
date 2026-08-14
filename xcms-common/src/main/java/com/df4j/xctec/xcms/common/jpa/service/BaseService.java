@@ -2,10 +2,11 @@ package com.df4j.xctec.xcms.common.jpa.service;
 
 import com.df4j.xctec.xcms.common.jpa.converter.ModelConverter;
 import com.df4j.xctec.xcms.common.jpa.dto.BaseDto;
-import com.df4j.xctec.xcms.common.jpa.entity.BaseEntity;
+import com.df4j.xctec.xcms.common.jpa.entity.BaseAuditableEntity;
 import com.df4j.xctec.xcms.common.jpa.entity.TenantScoped;
 import com.df4j.xctec.xcms.common.jpa.form.BaseForm;
 import com.df4j.xctec.xcms.common.jpa.repository.BaseRepository;
+import com.df4j.xctec.xcms.common.security.authentication.userdetails.XcmsUserDetails;
 import com.df4j.xctec.xcms.core.context.tenant.TenantContextUtils;
 import com.df4j.xctec.xcms.core.exception.BizException;
 import com.df4j.xctec.xcms.core.vo.PageQuery;
@@ -19,8 +20,11 @@ import com.querydsl.jpa.JPQLQueryFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Getter
-public abstract class BaseService<E extends BaseEntity,
+public abstract class BaseService<E extends BaseAuditableEntity,
         Q extends EntityPathBase<E>,
         D extends BaseDto,
         F extends BaseForm,
@@ -108,6 +112,49 @@ public abstract class BaseService<E extends BaseEntity,
     }
 
     /**
+     * 非请求上下文（如系统初始化、内部调用）下无登录用户时的审计用户ID哨兵值。
+     */
+    protected static final Long SYSTEM_USER_ID = 0L;
+
+    /**
+     * 取当前登录用户ID（来自 SecurityContext 的 principal）。
+     * 无认证上下文（如 bootstrap/内部调用）时返回 null，由 {@link #stampAudit} 回退为系统用户。
+     */
+    protected Long currentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof XcmsUserDetails userDetails) {
+            return userDetails.getUserId();
+        }
+        return null;
+    }
+
+    /**
+     * 统一填充审计列，避免 {@code createBy/createTime/updateTime/updateBy} 因 NOT NULL 约束导致落库失败。
+     * <ul>
+     *   <li>create：填充 createBy/createTime（createBy 为 insert-only，不覆盖已有值）。</li>
+     *   <li>edit：刷新 updateBy/updateTime 为当前操作者与时间。</li>
+     * </ul>
+     * 用户ID优先取登录主体，缺省回退为 {@link #SYSTEM_USER_ID}。
+     */
+    protected void stampAudit(E entity, boolean isCreate) {
+        Long userId = currentUserId();
+        if (userId == null) {
+            userId = SYSTEM_USER_ID;
+        }
+        Instant now = Instant.now();
+        if (isCreate) {
+            if (entity.getCreateTime() == null) {
+                entity.setCreateTime(now);
+            }
+            if (entity.getCreateBy() == null) {
+                entity.setCreateBy(userId);
+            }
+        }
+        entity.setUpdateTime(now);
+        entity.setUpdateBy(userId);
+    }
+
+    /**
      * 反射获取 Q 类型的 tenantId 路径（租户隔离实体必有该 public 字段）。
      */
     @SuppressWarnings("unchecked")
@@ -183,6 +230,7 @@ public abstract class BaseService<E extends BaseEntity,
         E entity = this.getConverter().toEntity(form);
         stampTenantId(entity);
         onBeforePersist(entity);
+        stampAudit(entity, true);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }
@@ -199,6 +247,7 @@ public abstract class BaseService<E extends BaseEntity,
         this.getConverter().setEntity(form, entity);
         stampTenantId(entity);
         onBeforePersist(entity);
+        stampAudit(entity, false);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }

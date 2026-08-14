@@ -80,6 +80,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
         // 写入时把租户ID从上下文 stamp 到实体（form 不得携带 tenantId）
         stampTenantId(entity);
         onBeforePersist(entity);
+        stampAudit(entity, true);
         E saved = this.getRepository().save(entity);
         return this.getConverter().toForm(saved);
     }
