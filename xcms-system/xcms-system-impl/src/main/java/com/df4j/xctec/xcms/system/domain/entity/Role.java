@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -37,4 +39,12 @@ public class Role extends BaseAuditableEntity implements TenantScoped {
 
     @Column(name = "enable_status", length = 20)
     private String enableStatus;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "sys_role_menu",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_id")
+    )
+    private List<Menu> menus;
 }

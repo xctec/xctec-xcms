@@ -48,9 +48,6 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
         if (StringUtils.hasText(params.getMobile())) {
             where.and(q.mobile.contains(params.getMobile()));
         }
-        if (params.getOrgUnitId() != null) {
-            where.and(q.orgUnitId.eq(params.getOrgUnitId()));
-        }
         if (StringUtils.hasText(params.getEnableStatus())) {
             where.and(q.enableStatus.eq(params.getEnableStatus()));
         }
