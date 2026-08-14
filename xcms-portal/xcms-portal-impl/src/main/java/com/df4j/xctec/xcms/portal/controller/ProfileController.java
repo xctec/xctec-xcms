@@ -6,9 +6,9 @@ import com.df4j.xctec.xcms.core.utils.ResultUtils;
 import com.df4j.xctec.xcms.core.vo.ResultVo;
 import com.df4j.xctec.xcms.portal.api.ProfileApi;
 import com.df4j.xctec.xcms.portal.api.vo.MenuVo;
-import com.df4j.xctec.xcms.system.domain.dto.MenuDto;
-import com.df4j.xctec.xcms.system.domain.query.MenuQuery;
-import com.df4j.xctec.xcms.system.service.MenuService;
+import com.df4j.xctec.xcms.system.api.dto.UserMenuDto;
+import com.df4j.xctec.xcms.system.api.query.UserMenuQuery;
+import com.df4j.xctec.xcms.system.api.service.UserMenuService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,15 +21,15 @@ import java.util.stream.Collectors;
  * 当前登录用户相关信息接口实现（portal-impl）。
  * <p>
  * 从 Spring Security 上下文取出认证时已还原的 {@link XcmsUserDetails} 主体，
- * 返回当前用户信息与菜单树。菜单数据来自 system 模块的 {@link MenuService}。
+ * 返回当前用户信息与菜单树。菜单数据来自 system-api 的 {@link UserMenuService} 契约。
  */
 @RestController
 public class ProfileController implements ProfileApi {
 
-    private final MenuService menuService;
+    private final UserMenuService userMenuService;
 
-    public ProfileController(MenuService menuService) {
-        this.menuService = menuService;
+    public ProfileController(UserMenuService userMenuService) {
+        this.userMenuService = userMenuService;
     }
 
     @Override
@@ -52,12 +52,17 @@ public class ProfileController implements ProfileApi {
 
     @Override
     public ResultVo<List<MenuVo>> currentMenus() {
-        List<MenuDto> tree = menuService.tree(new MenuQuery());
+        XcmsUserDetails userDetails = currentUserDetails();
+        UserMenuQuery query = new UserMenuQuery();
+        query.setTenantId(userDetails.getTenantId());
+        query.setUserId(userDetails.getUserId());
+        query.setRoleCodes(userDetails.getRoleCodes());
+        List<UserMenuDto> tree = userMenuService.listByUser(query);
         List<MenuVo> voList = tree.stream().map(this::toMenuVo).collect(Collectors.toList());
         return ResultUtils.success(voList);
     }
 
-    private MenuVo toMenuVo(MenuDto dto) {
+    private MenuVo toMenuVo(UserMenuDto dto) {
         MenuVo vo = new MenuVo();
         vo.setId(dto.getId());
         vo.setParentId(dto.getParentId());
