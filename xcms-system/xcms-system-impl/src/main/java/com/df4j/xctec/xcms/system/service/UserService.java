@@ -78,6 +78,17 @@ public class UserService extends BaseService<User, QUser, UserDto, UserForm, Use
     }
 
     /**
+     * edit 前置：表单密码为 null/空白时置为 null，使 MapStruct 的 IGNORE 策略
+     * 保留实体既有 BCrypt 哈希，避免把已加密密码清空为 ""（高危）。
+     */
+    @Override
+    protected void beforeEdit(UserForm form, User entity) {
+        if (form.getPassword() == null || form.getPassword().isBlank()) {
+            form.setPassword(null);
+        }
+    }
+
+    /**
      * 修改密码：按当前租户取数，校验旧密码后写入新密码（BCrypt 加密）。
      *
      * @param userId       当前登录用户ID（来自 principal）
