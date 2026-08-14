@@ -11,7 +11,7 @@ import com.df4j.xctec.xcms.system.api.query.UserMenuQuery;
 import com.df4j.xctec.xcms.system.api.service.UserMenuService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.df4j.xctec.xcms.core.exception.BizException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class ProfileController implements ProfileApi {
     private XcmsUserDetails currentUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof XcmsUserDetails)) {
-            throw new UsernameNotFoundException("未登录或登录已失效");
+            throw new BizException("401", "未登录或登录已失效");
         }
         return (XcmsUserDetails) authentication.getPrincipal();
     }
