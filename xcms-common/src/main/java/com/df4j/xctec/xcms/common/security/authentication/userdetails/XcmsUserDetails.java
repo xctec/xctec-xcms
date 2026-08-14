@@ -27,6 +27,8 @@ public class XcmsUserDetails implements UserDetails {
     private String password;
     private String encType;
     private Set<String> roleCodes;
+    private List<String> roleNames;
+    private String orgUnitName;
     private String enableStatus;
 
 

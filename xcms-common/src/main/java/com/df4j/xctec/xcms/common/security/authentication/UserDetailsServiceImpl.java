@@ -55,6 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         details.setMobile(authUser.getMobile());
         details.setEmail(authUser.getEmail());
         details.setEnableStatus(authUser.getEnableStatus());
+        details.setRoleNames(authUser.getRoleNames());
+        details.setOrgUnitName(authUser.getOrgUnitName());
         return details;
     }
 }
