@@ -1,6 +1,7 @@
 package com.df4j.xctec.xcms.common.security.authentication.filter;
 
 import com.df4j.xctec.xcms.common.security.authentication.AuthUser;
+import com.df4j.xctec.xcms.common.security.authentication.handler.XcmsAccessDeniedHandler;
 import com.df4j.xctec.xcms.common.security.authentication.userdetails.XcmsUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,14 +19,18 @@ import java.io.IOException;
  * <p>
  * 位于 {@link XcmsBearerTokenAuthenticationFilter} 之后：在 Bearer 认证建立 principal 之后，
  * 校验请求头 {@code X-Tenant-Id} 是否等于登录主体（principal）所属租户。
- * 不一致（伪造租户切换）一律拒绝，返回 403。
+ * 不一致（伪造租户切换）一律拒绝，返回 403（{@code errorNo=-403}）。
  * <p>
- * 未认证路径（未携带合法 Bearer Token，SecurityContext 中无已认证 principal）直接放行，
+ * 拒绝时直接通过 {@link XcmsAccessDeniedHandler} 写出 403 响应并终止过滤器链，
+ * 不依赖 {@code ExceptionTranslationFilter} 的捕获顺序（本过滤器位于其上游，抛异常会冒泡成 500）。
+ * 未认证路径（无合法 Bearer / permitAll 路径）直接放行，
  * 由 {@code authorizeHttpRequests} 的 {@code permitAll/authenticated} 规则决定最终是否放行。
  */
 public class TenantValidationFilter extends OncePerRequestFilter {
 
     private static final String TENANT_HEADER = "X-Tenant-Id";
+
+    private final XcmsAccessDeniedHandler accessDeniedHandler = new XcmsAccessDeniedHandler();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -46,20 +51,27 @@ public class TenantValidationFilter extends OncePerRequestFilter {
 
         String headerTenant = request.getHeader(TENANT_HEADER);
         if (headerTenant == null || headerTenant.isBlank()) {
-            throw new AccessDeniedException("缺少租户标识（X-Tenant-Id），拒绝访问");
+            deny(request, response, "缺少租户标识（X-Tenant-Id），拒绝访问");
+            return;
         }
         Long headerTenantId;
         try {
             headerTenantId = Long.valueOf(headerTenant.trim());
         } catch (NumberFormatException e) {
-            throw new AccessDeniedException("租户标识非法（X-Tenant-Id），拒绝访问");
+            deny(request, response, "租户标识非法（X-Tenant-Id），拒绝访问");
+            return;
         }
 
         if (!principalTenantId.equals(headerTenantId)) {
-            throw new AccessDeniedException("租户标识与登录租户不一致，拒绝访问");
+            deny(request, response, "租户标识与登录租户不一致，拒绝访问");
+            return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void deny(HttpServletRequest request, HttpServletResponse response, String message) throws IOException, ServletException {
+        accessDeniedHandler.handle(request, response, new AccessDeniedException(message));
     }
 
     private Long extractTenantId(Authentication authentication) {
