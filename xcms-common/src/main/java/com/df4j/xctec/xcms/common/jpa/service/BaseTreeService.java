@@ -12,6 +12,7 @@ import com.df4j.xctec.xcms.core.vo.PageQuery;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public F create(F form) {
         Long parentId = form.getParentId();
         if (parentId == null) {
@@ -86,6 +88,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public F edit(F form) {
         // todo
         // 需要考虑修改父节点，也就是移动子树的情况
@@ -93,6 +96,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public long del(Long id) {
         E entity = this.getRepository()
                 .findById(id)
@@ -109,6 +113,7 @@ public abstract class BaseTreeService<E extends BaseTreeEntity,
     }
 
     @Override
+    @Transactional
     public long delAll(List<Long> ids) {
         List<E> entities = this.getRepository()
                 .findAllById(ids);

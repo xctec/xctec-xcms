@@ -22,6 +22,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
@@ -54,6 +55,13 @@ public abstract class BaseService<E extends BaseAuditableEntity,
      * 默认空实现，仅对覆写的实体生效，不影响其他实体。
      */
     protected void onBeforePersist(E entity) {
+    }
+
+    /**
+     * edit 前置钩子，子类可覆写以在 {@code setEntity} 前调整表单（如把空白密码置为 null，
+     * 使 MapStruct 的 {@code IGNORE} 策略保留实体既有值，避免覆盖原哈希）。默认空实现。
+     */
+    protected void beforeEdit(F form, E entity) {
     }
 
     public abstract Q getQ();
@@ -226,6 +234,7 @@ public abstract class BaseService<E extends BaseAuditableEntity,
                 .orElse(null);
     }
 
+    @Transactional
     public F create(F form) {
         E entity = this.getConverter().toEntity(form);
         stampTenantId(entity);
@@ -235,6 +244,7 @@ public abstract class BaseService<E extends BaseAuditableEntity,
         return this.getConverter().toForm(saved);
     }
 
+    @Transactional
     public F edit(F form) {
         Long id = form.getId();
         if (id == null) {
@@ -244,6 +254,7 @@ public abstract class BaseService<E extends BaseAuditableEntity,
                 .findById(id)
                 .orElseThrow(() -> BizException.of("-2", "找不到制定id的记录"));
         ensureSameTenant(entity);
+        beforeEdit(form, entity);
         this.getConverter().setEntity(form, entity);
         stampTenantId(entity);
         onBeforePersist(entity);
@@ -252,6 +263,7 @@ public abstract class BaseService<E extends BaseAuditableEntity,
         return this.getConverter().toForm(saved);
     }
 
+    @Transactional
     public long del(Long id) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(this.getIdPath().eq(id));
@@ -262,6 +274,7 @@ public abstract class BaseService<E extends BaseAuditableEntity,
                 .execute();
     }
 
+    @Transactional
     public long delAll(List<Long> ids) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(this.getIdPath().in(ids));
