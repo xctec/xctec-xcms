@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -40,9 +42,18 @@ public class User extends BaseAuditableEntity implements TenantScoped {
     @Column(name = "avatar", length = 255, comment = "头像地址")
     private String avatar;
 
-    @Column(name = "org_unit_id", precision = 18, comment = "所属机构ID")
-    private Long orgUnitId;
-
     @Column(name = "enable_status", length = 20, comment = "启用状态")
     private String enableStatus;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "sys_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "org_unit_id", comment = "所属机构ID")
+    private OrgUnit orgUnit;
 }
