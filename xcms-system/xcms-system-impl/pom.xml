@@ -28,6 +28,13 @@
             <artifactId>mapstruct</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- Jackson 3 的注解仍位于 Jackson 2.x groupId（databind POM 注明 "Annotations remain at Jackson 2.x group id"），
+             UserForm.password 用 @JsonProperty(access = WRITE_ONLY) 实现"只进不出"，需该注解在编译期可见（provided，不打包）。 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.df4j.xctec.xcms</groupId>
             <artifactId>xcms-common</artifactId>
@@ -35,6 +42,19 @@
         <dependency>
             <groupId>com.df4j.xctec.xcms</groupId>
             <artifactId>xcms-system-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
