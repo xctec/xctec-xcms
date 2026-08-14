@@ -19,8 +19,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.df4j.xctec.xcms</groupId>
             <artifactId>xcms-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.df4j.xctec.xcms</groupId>
+            <artifactId>xcms-common</artifactId>
         </dependency>
     </dependencies>
 
