@@ -71,8 +71,6 @@ public abstract class BaseService<E extends BaseEntity,
                 .orderBy(this.getOrders(params));
 
         Long total = q.select(Expressions.ONE.count())
-                .limit(-1)
-                .offset(-1)
                 .fetchOne();
 
         if (total == null) {
